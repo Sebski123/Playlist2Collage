@@ -25,11 +25,12 @@ def getAuthToken():
     return response_data["access_token"]
 
 def getPlaylistAlbums(playlist):
-    requestUrl = "https://api.spotify.com/v1/playlists/{}".format(playlist)
+    requestUrl = "https://api.spotify.com/v1/playlists/{}/tracks".format(playlist)
+    albums = {}
 
     params = {
-        'fields': 'tracks.items(limit, next, total, track(album(name,images))), name',
-        'offset': 100,
+        'fields': 'items(track(album(name,images))), limit, next, total',
+        'offset': 0,
         'limit' : 100
     }
 
@@ -38,18 +39,26 @@ def getPlaylistAlbums(playlist):
         'Authorization': 'Bearer {}'.format(AUTH_TOKEN)
     }
     
-    get_request = requests.get(requestUrl, headers=headers, params=params)
-    response_data = json.loads(get_request.text)
+    playlistName = json.loads(requests.get(requestUrl.replace("/tracks", ""), headers=headers, params={'fields':'name'}).text)["name"]
 
-    with open("data123.json", "w") as file:
-        json.dump(response_data, file)
+    while True:
+        get_request = requests.get(requestUrl, headers=headers, params=params)
+        response_data = json.loads(get_request.text)
 
-    albums = {}
-    for track in response_data["tracks"]["items"]:
-        albums[track["track"]["album"]["name"]] = track["track"]["album"]["images"]
+        with open("data123.json", "w") as file:
+            json.dump(response_data, file)
+
+        for track in response_data["items"]:
+            albums[track["track"]["album"]["name"]] = track["track"]["album"]["images"]
+        
+        if response_data["next"] == None:
+            break
+        else:
+            params["offset"] += 100
+
 
     print(len(albums.keys()))
-    return albums, response_data["name"]
+    return albums, playlistName
 
 def downloadAlbums(albums, playlistName):
 
@@ -62,7 +71,7 @@ def downloadAlbums(albums, playlistName):
     for album in albums.keys():
 
         url = albums[album][1]["url"]
-        filename = '{}\\{}\\{}.png'.format(dir_path, playlistName.replace(" ", "_"), url.split('/')[-1])
+        filename = '{}\\{}\\{}.png'.format(dir_path, playlistName.replace(" ", "_"), ''.join(e for e in album if e.isalnum()))
         r = requests.get(url, allow_redirects=True)
         with open(filename, 'wb') as handler:
             handler.write(r.content)
