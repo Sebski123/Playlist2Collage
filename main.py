@@ -70,7 +70,7 @@ def downloadAlbums(albums, playlistName):
 
     for album in albums.keys():
 
-        url = albums[album][1]["url"]
+        url = albums[album][0]["url"]
         filename = '{}\\{}\\{}.png'.format(dir_path, playlistName.replace(" ", "_"), ''.join(e for e in album if e.isalnum()))
         r = requests.get(url, allow_redirects=True)
         with open(filename, 'wb') as handler:
