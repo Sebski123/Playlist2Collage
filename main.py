@@ -57,16 +57,20 @@ def getPlaylistAlbums(playlist):
             params["offset"] += 100
 
 
-    print(len(albums.keys()))
+    print(len(albums.keys()), " album covers to download")
     return albums, playlistName
 
 def downloadAlbums(albums, playlistName):
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
 
-    os.makedirs("{}\\{}".format(dir_path, playlistName.replace(" ", "_")), exist_ok=True)
-
-    print(dir_path)
+    if not os.path.isdir("{}\\{}".format(dir_path, playlistName.replace(" ", "_"))):
+        os.makedirs("{}\\{}".format(dir_path, playlistName.replace(" ", "_")), exist_ok=True)
+    else:
+        print("Directory already exists, skipping download")
+        return "{}\\{}".format(dir_path, playlistName.replace(" ", "_"))
+    
+    print("Downloading...")
 
     for album in albums.keys():
 
@@ -75,6 +79,8 @@ def downloadAlbums(albums, playlistName):
         r = requests.get(url, allow_redirects=True)
         with open(filename, 'wb') as handler:
             handler.write(r.content)
+    
+    return "{}\\{}".format(dir_path, playlistName.replace(" ", "_"))
 
 def main():
     authToken = AUTH_TOKEN  #getAuthToken()
