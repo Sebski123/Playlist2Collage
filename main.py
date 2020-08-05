@@ -3,7 +3,11 @@ import base64
 import requests
 import json
 import os 
+import shutil
+import random
 from PIL import Image
+
+ChromeLocation = "D:\\Users\\sebth\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\background.jpg"
 
 def getAuthToken():
     code_payload = {
@@ -196,6 +200,8 @@ def main():
     path = downloadAlbums(albums, playlistName)
     squareImages(path)
     create_collage(path, aspectRatio)
+    shutil.move("./collage.jpg", ChromeLocation)
+    print("Done replacing file")
 
 
 if __name__ == "__main__":
