@@ -2,7 +2,7 @@
 Converts album covers from Spotify playlist to a Google Chrome "new tab" background
 
 
-
+## Setup
 1. Go to https://developer.spotify.com/dashboard and create a new app
 1. Replace values CLIENT_ID and CLIENT_SECRET in VARS.py with values from app
 1. Uncomment line 209 and comment line 110 in main.py. It should look like [this](https://i.imgur.com/DnO9zsZ.png)
@@ -14,3 +14,11 @@ Converts album covers from Spotify playlist to a Google Chrome "new tab" backgro
 1. Change the value of "ChromeLocation" in main.py to the location of background.jpg
 1. Run main.py eg. `python main.py`
 1. Output should look like [this](https://i.imgur.com/P2CSgcN.png)
+
+
+## Troubleshooting
+If you get an error like this: 
+
+![error](https://i.imgur.com/uvElPWC.png)
+
+Repeat step 3-6 from Setup and try again
