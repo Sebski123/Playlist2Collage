@@ -82,11 +82,24 @@ def downloadAlbums(albums, playlistName):
     
     return "{}\\{}".format(dir_path, playlistName.replace(" ", "_"))
 
+def squareImages(path):
+    images = [os.path.join(path, fn) for fn in os.listdir(path)]
+    
+    print("Resizing images...")
+
+    for image in images:
+        oldImg = Image.open(image)
+        if oldImg.size != (640, 640):
+            newImg = Image.new("RGB", (640, 640))
+            newImg.paste(oldImg, ((640-oldImg.size[0])//2,(640-oldImg.size[1])//2))
+            newImg.save(image)
+
 def main():
     authToken = AUTH_TOKEN  #getAuthToken()
     print ("Token: " + authToken)
     albums, playlistName = getPlaylistAlbums(PLAYLIST_ID)
-    downloadAlbums(albums, playlistName)
+    path = downloadAlbums(albums, playlistName)
+    squareImages(path)
 
 
 if __name__ == "__main__":
